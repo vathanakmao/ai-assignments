@@ -25,4 +25,3 @@ plot.igraph(g)
 
 path = dfs(g, "A", "G")
 
-path

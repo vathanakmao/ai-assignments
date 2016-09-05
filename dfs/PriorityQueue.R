@@ -17,9 +17,6 @@ PriorityQueue <- setRefClass(
       
       data <<- c(vertex, data)
       
-      print("====================================== 1")
-      print(data)
-      print("====================================== 2")
       ## (bubble) sort the items by path cost
       i = 1;
       j = length(data);
@@ -34,9 +31,6 @@ PriorityQueue <- setRefClass(
         }
         j = j - 1
       }
-      
-      print(data)
-      print("======================================")
     },
     
     dequeue = function() {
