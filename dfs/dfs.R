@@ -3,39 +3,38 @@ source("PriorityQueue.R")
 dfs = function(g, init, goal) {
   'Depth First Search'
   
-  prev <- init
-  explored <- c()
+  prev <- Vertex$new()
+  prev$name <- init
+  prev$totalpathcost <- 0
+  
+  explored <- list()
   goalFound <- FALSE
   solution <- new.env(hash=T, parent=emptyenv())
   
   frontier <- PriorityQueue$new()
-  frontier$enqueue(prev, 0)
+  frontier$enqueue(prev)
   
   while (!frontier$isEmpty() && !goalFound) {
     
     'get the next node to be expanded'
     prev <- frontier$dequeue()
     explored[length(explored)+1] <- prev
+    
+    print(prev$name)
 
     'get all children of prev node and sort in reversed alphabetical order'
     '(so that when pop from the stack, the child nodes will be ordered alphabetically)'
-    child <- V(g)[neighbors(g,prev)]$name
+    child <- V(g)[neighbors(g,prev$name)]$name
     
-    print("------------------------------")
-    print(child)
-    
-    # (bubble) sort the items by path cost
+    ## (bubble) sort the items by path cost
     j = length(child) - 1
     i = 1
     while (i < j) {
       for (r in i:(j-1)) {
-        child1 = child[r]
-        pathcost1 = E(g,path=c(prev,child[r]))$weight
+        totalpathcost1 = E(g,path=c(prev$name,child[r]))$weight + prev$totalpathcost
+        totalpathcost2 = E(g,path=c(prev$name,child[r+1]))$weight + prev$totalpathcost
         
-        child2 = child[r+1]
-        pathcost2 = E(g,path=c(prev,child[r+1]))$weight
-        
-        if (pathcost1 > pathcost2) {
+        if (totalpathcost1 > totalpathcost2) {
           tmp = child[r]
           child[r] = child[r+1]
           child[r+1] = tmp
@@ -43,20 +42,20 @@ dfs = function(g, init, goal) {
       }
       j = j - 1
     }
-    
-    print("------------------------------2")
-    print(child)
-    print("------------------------------3")
 
     for (i in 1:length(child)) {
       each_child <- child[i]
       
       'add the newly discovered node if it is not already explored and not already generated'
-      if (!(each_child %in% explored | each_child %in% frontier$data)) {
-        frontier$enqueue(child[i], 0+E(g,path=c(prev,child[i]))$weight)
+      # if (!(each_child %in% explored | each_child %in% frontier$data)) {
+      if ( !(inExplored(each_child, explored) | inFrontiers(each_child, frontier$data)) ) {
+        vertex <- Vertex$new()
+        vertex$name <- each_child
+        vertex$totalpathcost <- prev$totalpathcost + E(g,path=c(prev$name,each_child))$weight 
+        frontier$enqueue(vertex)
         
         'hashmap the parent of the child to prev (for backtrack to generate a solution path'
-        assign(each_child, prev, solution)
+        assign(each_child, prev$name, solution)
       }
       
       'goal test: stop the search when the goal is generated'
@@ -92,7 +91,7 @@ dfs = function(g, init, goal) {
   path <- c(goal)
   p <- goal
   repeat {
-    p <- get(p,solution)
+    p <- get(p,solution)  # get parent vertex
     path <- c(p,path)
     if (p==init) break
   }
@@ -102,22 +101,30 @@ dfs = function(g, init, goal) {
   return(answer)
 }
 
-sort_nodes_by_pathcost = function(nodes.pathcosts, asc=TRUE) {
-  # (bubble) sort the items by path cost
-  while (i < j) {
-    i = 1;
-    for (r in i:(j-1)) {
-      item.pathcost1 <- nodes.pathcosts[[r]]
-      item.pathcost2 <- nodes.pathcosts[[r+1]]
-      if (asc && item.pathcost1[2] > item.pathcost2[2]) {
-        nodes.pathcosts[[r]] <<- item.pathcost2
-        nodes.pathcosts[[r+1]] <<- item.pathcost1    
-      } else if (!asc && item.pathcost1[2] < item.pathcost2[2]) {
-        nodes.pathcosts[[r]] <<- item.pathcost2
-        nodes.pathcosts[[r+1]] <<- item.pathcost1
-      }
+inExplored = function(name, vertices) {
+  i = 1
+  while (i <= length(vertices)) {
+    if (vertices[[i]]$name == name) {
+      return (T)
     }
-    j = j - 1
+    i = i + 1
   }
-  return (nodes.pathcosts)
+  return (F)
 }
+
+inFrontiers = function(name, data) {
+  i = 1
+  while (i <= length(data)) {
+    if (data[[i]]$name == name) {
+      return (T)
+    }
+    i = i + 1
+  }
+  return (F)
+}
+
+Vertex <- setRefClass(
+  "Vertex",
+  
+  fields = c("name", "totalpathcost")
+)

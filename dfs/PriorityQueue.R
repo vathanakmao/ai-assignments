@@ -2,7 +2,7 @@ PriorityQueue <- setRefClass(
   "PriorityQueue",
   
   fields = list(
-    data = "list"
+    data = "vector"
   ),
   
   methods = list (
@@ -12,39 +12,39 @@ PriorityQueue <- setRefClass(
       return(length(data))
     },
     
-    enqueue = function(item, path.cost) {
+    enqueue = function(vertex) {
       'Enqueue inserts element at the tail'
       
-      l <- list()
-      l <- append( l, list(c(item, path.cost)) )
+      data <<- c(vertex, data)
       
-      # sort items by path cost
+      print("====================================== 1")
+      print(data)
+      print("====================================== 2")
+      ## (bubble) sort the items by path cost
       i = 1;
       j = length(data);
-      
-      # (bubble) sort the items by path cost
       while (i < j) {
         i = 1;
         for (r in i:(j-1)) {
-          item.pathcost1 <- data[[r]]
-          item.pathcost2 <- data[[r+1]]
-          if (item.pathcost1[2] < item.pathcost2[2]) {
-            data[[r]] <<- item.pathcost2
-            data[[r+1]] <<- item.pathcost1
+          if ( data[[r]]$totalpathcost > data[[r+1]]$totalpathcost) {
+            tmp =  data[[r]]
+            data[[r]] <<- data[[r+1]]
+            data[[r+1]] <<- tmp
           }
         }
         j = j - 1
       }
       
-      data <<- c(l, data)
+      print(data)
+      print("======================================")
     },
     
     dequeue = function() {
       'Dequeue removes and returns element from the head'
       if (length(data)==0) return (NULL)
-      item <- data[[1]][1]
+      vertex = data[[1]]
       data <<- data[-1]
-      return(item)
+      return(vertex)
     },
     
     isEmpty = function(){
