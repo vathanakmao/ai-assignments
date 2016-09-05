@@ -1,6 +1,6 @@
 source("PriorityQueue.R")
 
-dfs = function(g, init, goal) {
+ucs = function(g, init, goal) {
   'Depth First Search'
   
   prev <- Vertex$new()
