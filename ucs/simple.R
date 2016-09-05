@@ -1,4 +1,4 @@
-source('dfs.R')
+source('ucs.R')
 source('PriorityQueue.R')
 
 require(igraph)
@@ -28,6 +28,6 @@ E(g)$label= E(g)$weight
 
 plot.igraph(g)
 
-dfs(g, "Phnom Penh", "Siem Reap")
+ucs(g, "Phnom Penh", "Siem Reap")
 
 

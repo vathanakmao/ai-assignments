@@ -1,6 +1,6 @@
 source("PriorityQueue.R")
 
-dfs = function(g, init, goal) {
+ucs = function(g, init, goal) {
   'Depth First Search'
   
   prev <- Vertex$new()
@@ -21,7 +21,7 @@ dfs = function(g, init, goal) {
     explored[length(explored)+1] <- prev
     
     print(prev$name)
-
+    
     'get all children of prev node and sort in reversed alphabetical order'
     '(so that when pop from the stack, the child nodes will be ordered alphabetically)'
     child <- V(g)[neighbors(g,prev$name)]$name
@@ -42,7 +42,7 @@ dfs = function(g, init, goal) {
       }
       j = j - 1
     }
-
+    
     for (i in 1:length(child)) {
       each_child <- child[i]
       
@@ -69,7 +69,7 @@ dfs = function(g, init, goal) {
     print("FRONTIER")
     print(frontier$data)
   }
- 
+  
   'Generate a solution path'
   'answer[[1]]=number of steps from initial to goal'
   'answer[[2]]=a solution path'
@@ -82,10 +82,10 @@ dfs = function(g, init, goal) {
     answer[[3]] <- explored
     return(answer)
   }
-
+  
   'Special case: the goal node is not reachable from the initial node'
   if (!exists(goal,solution)) stop("queue is empty!")
-
+  
   'backtrack from the goal to the start following child->to->parent links'
   answer <- list()
   path <- c(goal)
