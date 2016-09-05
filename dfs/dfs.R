@@ -1,4 +1,4 @@
-source("Queue.R")
+source("PriorityQueue.R")
 
 dfs = function(g, init, goal) {
   'Depth First Search'
@@ -8,8 +8,8 @@ dfs = function(g, init, goal) {
   goalFound <- FALSE
   solution <- new.env(hash=T, parent=emptyenv())
   
-  frontier <- Queue$new()
-  frontier$enqueue(prev)
+  frontier <- PriorityQueue$new()
+  frontier$enqueue(prev, 3)
   
   while (!frontier$isEmpty() && !goalFound) {
     
@@ -26,7 +26,7 @@ dfs = function(g, init, goal) {
       each_child <- child[i]
       'add the newly discovered node if it is not already explored and not already generated'
       if (!(each_child %in% explored | each_child %in% frontier$data)) {
-        frontier$enqueue(child[i])
+        frontier$enqueue(child[i], 3)
         'hashmap the parent of the child to prev (for backtrack to generate a solution path'
         assign(each_child, prev, solution)
       }

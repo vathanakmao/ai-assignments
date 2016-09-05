@@ -1,5 +1,5 @@
 source('dfs.R')
-source('Queue.R')
+source('PriorityQueue.R')
 
 require(igraph)
 
