@@ -9,7 +9,7 @@ dfs = function(g, init, goal) {
   solution <- new.env(hash=T, parent=emptyenv())
   
   frontier <- PriorityQueue$new()
-  frontier$enqueue(prev, 3)
+  frontier$enqueue(prev, 0)
   
   while (!frontier$isEmpty() && !goalFound) {
     
@@ -20,20 +20,50 @@ dfs = function(g, init, goal) {
     'get all children of prev node and sort in reversed alphabetical order'
     '(so that when pop from the stack, the child nodes will be ordered alphabetically)'
     child <- V(g)[neighbors(g,prev)]$name
-    child <- sort(child, decreasing=TRUE)
+    
+    print("------------------------------")
+    print(child)
+    
+    # (bubble) sort the items by path cost
+    j = length(child) - 1
+    i = 1
+    while (i < j) {
+      for (r in i:(j-1)) {
+        child1 = child[r]
+        pathcost1 = E(g,path=c(prev,child[r]))$weight
+        
+        child2 = child[r+1]
+        pathcost2 = E(g,path=c(prev,child[r+1]))$weight
+        
+        if (pathcost1 > pathcost2) {
+          tmp = child[r]
+          child[r] = child[r+1]
+          child[r+1] = tmp
+        } 
+      }
+      j = j - 1
+    }
+    
+    print("------------------------------2")
+    print(child)
+    print("------------------------------3")
 
     for (i in 1:length(child)) {
       each_child <- child[i]
+      
       'add the newly discovered node if it is not already explored and not already generated'
       if (!(each_child %in% explored | each_child %in% frontier$data)) {
-        frontier$enqueue(child[i], 3)
+        frontier$enqueue(child[i], 0+E(g,path=c(prev,child[i]))$weight)
+        
         'hashmap the parent of the child to prev (for backtrack to generate a solution path'
         assign(each_child, prev, solution)
       }
+      
       'goal test: stop the search when the goal is generated'
       goalFound = each_child==goal
       if (goalFound) break
     }
+    
     'debugging'
     print("EXPLORED")
     print(explored)
@@ -70,5 +100,24 @@ dfs = function(g, init, goal) {
   answer[[2]] <- path
   answer[[3]] <- explored
   return(answer)
+}
 
+sort_nodes_by_pathcost = function(nodes.pathcosts, asc=TRUE) {
+  # (bubble) sort the items by path cost
+  while (i < j) {
+    i = 1;
+    for (r in i:(j-1)) {
+      item.pathcost1 <- nodes.pathcosts[[r]]
+      item.pathcost2 <- nodes.pathcosts[[r+1]]
+      if (asc && item.pathcost1[2] > item.pathcost2[2]) {
+        nodes.pathcosts[[r]] <<- item.pathcost2
+        nodes.pathcosts[[r+1]] <<- item.pathcost1    
+      } else if (!asc && item.pathcost1[2] < item.pathcost2[2]) {
+        nodes.pathcosts[[r]] <<- item.pathcost2
+        nodes.pathcosts[[r+1]] <<- item.pathcost1
+      }
+    }
+    j = j - 1
+  }
+  return (nodes.pathcosts)
 }

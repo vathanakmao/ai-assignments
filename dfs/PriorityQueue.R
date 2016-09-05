@@ -2,7 +2,7 @@ PriorityQueue <- setRefClass(
   "PriorityQueue",
   
   fields = list(
-    data = "vector"
+    data = "list"
   ),
   
   methods = list (
@@ -16,7 +16,7 @@ PriorityQueue <- setRefClass(
       'Enqueue inserts element at the tail'
       
       l <- list()
-      l <- c( l, list(c(item, path.cost)) )
+      l <- append( l, list(c(item, path.cost)) )
       
       # sort items by path cost
       i = 1;
@@ -28,7 +28,7 @@ PriorityQueue <- setRefClass(
         for (r in i:(j-1)) {
           item.pathcost1 <- data[[r]]
           item.pathcost2 <- data[[r+1]]
-          if (item.pathcost1[2] > item.pathcost2[2]) {
+          if (item.pathcost1[2] < item.pathcost2[2]) {
             data[[r]] <<- item.pathcost2
             data[[r+1]] <<- item.pathcost1
           }
