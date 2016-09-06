@@ -1,4 +1,5 @@
 source("PriorityQueue.R")
+source("Vertex.R")
 
 ucs = function(g, init, goal) {
   'Depth First Search'
@@ -19,30 +20,11 @@ ucs = function(g, init, goal) {
     'get the next node to be expanded'
     prev <- frontier$dequeue()
     explored[length(explored)+1] <- prev
-    
-    print(prev$name)
-    
+
     'get all children of prev node and sort in reversed alphabetical order'
     '(so that when pop from the stack, the child nodes will be ordered alphabetically)'
     child <- V(g)[neighbors(g,prev$name)]$name
-    
-    ## (bubble) sort the items by path cost
-    j = length(child) - 1
-    i = 1
-    while (i < j) {
-      for (r in i:(j-1)) {
-        totalpathcost1 = E(g,path=c(prev$name,child[r]))$weight + prev$totalpathcost
-        totalpathcost2 = E(g,path=c(prev$name,child[r+1]))$weight + prev$totalpathcost
-        
-        if (totalpathcost1 > totalpathcost2) {
-          tmp = child[r]
-          child[r] = child[r+1]
-          child[r+1] = tmp
-        } 
-      }
-      j = j - 1
-    }
-    
+
     for (i in 1:length(child)) {
       each_child <- child[i]
       
@@ -69,7 +51,7 @@ ucs = function(g, init, goal) {
     print("FRONTIER")
     print(frontier$data)
   }
-  
+ 
   'Generate a solution path'
   'answer[[1]]=number of steps from initial to goal'
   'answer[[2]]=a solution path'
@@ -82,10 +64,10 @@ ucs = function(g, init, goal) {
     answer[[3]] <- explored
     return(answer)
   }
-  
+
   'Special case: the goal node is not reachable from the initial node'
   if (!exists(goal,solution)) stop("queue is empty!")
-  
+
   'backtrack from the goal to the start following child->to->parent links'
   answer <- list()
   path <- c(goal)
@@ -123,8 +105,3 @@ inFrontiers = function(name, data) {
   return (F)
 }
 
-Vertex <- setRefClass(
-  "Vertex",
-  
-  fields = c("name", "totalpathcost")
-)

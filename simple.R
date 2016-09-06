@@ -14,20 +14,20 @@ g <- graph.data.frame(maps, directed=FALSE, vertices=cities)
 E(g)["Phnom Penh" %->% "Battambang"]$weight= 200
 E(g)["Phnom Penh" %->% "Kampongcham"]$weight= 120
 E(g)["Phnom Penh" %->% "Preyveng"]$weight= 180
-E(g)["Phnom Penh" %->% "Kampongchnang"]$weight= 90
+E(g)["Phnom Penh" %->% "Kampongchnang"]$weight= 250
 E(g)["Phnom Penh" %->% "Takeo"]$weight= 60
 E(g)["Takeo" %->% "Kampot"]$weight= 300
 E(g)["Kampongchnang" %->% "Krojes"]$weight= 150
 E(g)["Kampongchnang" %->% "Kampongspeu"]$weight= 90
 E(g)["Battambang" %->% "Posat"]$weight= 50
 E(g)["Kampongchnang" %->% "Posat"]$weight= 70
-E(g)["Posat" %->% "Siem Reap"]$weight= 140
+E(g)["Posat" %->% "Siem Reap"]$weight= 50
 E(g)["Battambang" %->% "Siem Reap"]$weight= 160
 E(g)["Siem Reap" %->% "Banteay Meanchey"]$weight= 80
 E(g)$label= E(g)$weight
 
 plot.igraph(g)
 
-ucs(g, "Phnom Penh", "Siem Reap")
-
+paths = ucs(g, "Phnom Penh", "Siem Reap")
+paths[[2]]
 
