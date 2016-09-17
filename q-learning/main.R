@@ -59,15 +59,18 @@ generate_r_table = function() {
 ##====================================================================================
 
 
-## prepare R table
-r.table = generate_r_table()
-
 ## train agent
 init = GridCell$new()
 init$id = 1
 goal = GridCell$new()
 goal$id = 25
 agent <- Agent$new()
+
+## set reward
+r.table = generate_r_table()
+r.table[[24]]$right = 100
+r.table[[20]]$down = 100
+
 q.table = agent$learn(r.table, init, goal)
 
 print_grid(r.table, max.col)
