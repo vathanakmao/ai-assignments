@@ -4,21 +4,19 @@ source("Agent.R")
 print_grid = function(mygrid, max.col) {
   row = ""
   for (i in 1:length(mygrid)) {
-    tmp <- c("(l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
+    tmp <- c("(id=", mygrid[[i]]$id,",l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
     cell <- paste(tmp, collapse='')
     # print(cell2)
     row <- paste(row, cell, sep=", ")
     if (i %% max.col == 0) {
-      print(row)
+      # print(row)
       row = ""
     }
   }
 }
 
-generate_r_table = function() {
+generate_r_table = function(max.row, max.col) {
   r.table <- c()
-  max.col = 5
-  max.row = 5
   total.cell = max.row * max.col
   for (i in 1:total.cell) {
     gc <- GridCell$new()
@@ -60,20 +58,22 @@ generate_r_table = function() {
 
 
 ## train agent
-init = GridCell$new()
-init$id = 1
-goal = GridCell$new()
-goal$id = 25
+initId = 1
+goalId = 25
 agent <- Agent$new()
 
 ## set reward
-r.table = generate_r_table()
-r.table[[24]]$right = 100
-r.table[[20]]$down = 100
+reward = 100
+col = 5
+row = 5
+r.table = generate_r_table(row, col)
+r.table[[24]]$right = reward
+r.table[[20]]$down = reward
+r.table[[25]]$self = reward
 
-q.table = agent$learn(r.table, init, goal)
+q.table = agent$learn(r.table, row, col, initId, goalId)
 
-print_grid(r.table, max.col)
+print_grid(r.table, col)
 
 
 
