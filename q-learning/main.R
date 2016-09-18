@@ -67,10 +67,10 @@ r.table = generate_r_table(row, col)
 r.table[[24]]$right = reward
 r.table[[20]]$down = reward
 r.table[[25]]$self = reward
-agent <- Agent$new(q.table=c(-1), q.table.row=5, q.table.col=5)
+agent <- Agent$new(q.table=list(-1))
 q.table = agent$learn(r.table, row, col, init.id, goal.id)
 
-print_grid(r.table, col)
+# print_grid(r.table, col)
 print_grid(q.table, col)
 
 

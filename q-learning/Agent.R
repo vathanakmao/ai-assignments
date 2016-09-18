@@ -2,9 +2,7 @@ Agent <- setRefClass(
   "Agent",
   
   fields = list(
-    q.table = "vector",
-    q.table.row = numeric,
-    q.table.col = numeric
+    q.table = "vector"
   ),
   
   methods = list(
@@ -13,22 +11,21 @@ Agent <- setRefClass(
     # r.table - one dimensional array
     #
     learn = function(r.table, r.row, r.col, init.id, goal.id) {
-      print(q.table)
-      
       # when the object is initialized, q.table must be assigned with list(-1)
       # cause is.null() and length() funcitons does work on empty list, list()
-      if ((q.table) <= 1) {
-        q.table.row <<- r.row
-        q.table.col <<- r.col
+      if (length(q.table) <= 1) {
+        ## NOTE: q.table.row return numeric(0) instead of the real value so i use r.row instead
         initialize_q_table(r.row, r.col)
       }
 
       cur.cell = get_cell_by_id(r.table, init.id)
       goal.cell = get_cell_by_id(r.table, goal.id)
       
-      print(cur.cell)
+      # print(cur.cell)
 
       while (cur.cell$id != goal.id) {
+        # print(cur.cell$id)
+        
         if (cur.cell$left <= -1 && cur.cell$up <= -1 && cur.cell$right <= -1 && cur.cell$down <= -1) {
           print("No path so quitting...")
           return (NULL)
@@ -62,8 +59,8 @@ Agent <- setRefClass(
         # Q(B, F) = R(B,F) + gamma * max( Q(F,B), Q(F,E), Q(F,F) )
         next.cell = get_next_cell_by_direction(cur.cell, direction, q.table, r.row, r.col) # next.cell is never null in this case
         
-        print("--------------------------------------------")
-        print(next.cell)
+        # print("--------------------------------------------")
+        # print(next.cell)
         
         max_weight = next.cell$left
         if (max_weight < next.cell$up) {
@@ -80,9 +77,15 @@ Agent <- setRefClass(
         # q_state_action = get_weight(cur.cell, direction) + 0.8 * max(c(next.cell$left, next.cell$up, next.cell$right, next.cell$down), na.rm = TRUE)
         set_weight(cur.cell, direction, q_state_action)
         next.cell$self = q_state_action
-
+        q.table[cur.cell$id] <<- cur.cell
+        
+        print("=======================")
+        print(q_state_action)
+        
         if (next.cell$id == goal.id) {
           goal.cell$self = q_state_action
+          q.table[goal.id] <<- goal.cell
+          q.table <<- q.table
           break
         }
 
@@ -98,8 +101,9 @@ Agent <- setRefClass(
     },
 
     get_next_cell_by_direction = function(cur.cell, direction, grid, row, col) {
-      print("====================== col:")
-      print(col)
+      # print("====================== grid:")
+      # print(grid)
+      
       if (direction == 1) { # if left
         if (cur.cell$left != -1) {
           return (grid[[cur.cell$id - 1]])
@@ -121,7 +125,10 @@ Agent <- setRefClass(
     },
 
     initialize_q_table = function(row, col) {
-      q.table <<- list()
+      # Dont use "q.table <<- list()" cause it will create 
+      # multi dimensional array when assigning more elements
+      q.table <<- q.table[-1]
+      
       total.cell = row * col
       for (i in 1:total.cell) {
         gc <- GridCell$new()
@@ -130,7 +137,7 @@ Agent <- setRefClass(
         gc$down = 0
         gc$left = 0
         gc$right = 0
-        q.table <<- list(q.table, gc)
+        q.table <<- c(q.table, gc)
 
         # if top row, no path up
         if (i >= 1 && i <= col) {
