@@ -79,14 +79,17 @@ row = 5
 r.table = generate_r_table(row, col)
 r.table[[12]]$down = reward
 r.table[[14]]$right = reward
-r.table[[15]]$self = reward
+# r.table[[15]]$self = reward
 
 print("============== R Table ==============")
 print_grid(r.table, col)
 
-agent <- Agent$new(q.table=list(-1))
+agent <- Agent$new()
 for (i in 1:10) {
   agent$learn(r.table, row, col, init.id, goal.id)  
+  
+  print("============== Q Table ==============")
+  print_grid(agent$q.table, col)
 }
 
 print("============== Q Table ==============")

@@ -2,7 +2,8 @@ Agent <- setRefClass(
   "Agent",
   
   fields = list(
-    q.table = "vector"
+    q.table = "vector",
+    gamma = "numeric"
   ),
   
   methods = list(
@@ -13,11 +14,12 @@ Agent <- setRefClass(
     learn = function(r.table, r.row, r.col, init.id, goal.id) {
       print("=================== START LEARNING ====================")
       
-      # when the object is initialized, q.table must be assigned with list(-1)
-      # cause is.null() and length() funcitons does work on empty list, list()
-      if (length(q.table) <= 1) {
+      if (length(q.table) == 0) {
         ## NOTE: q.table.row return numeric(0) instead of the real value so i use r.row instead
         initialize_q_table(r.row, r.col)
+      }
+      if (length(gamma) == 0) {
+        gamma <<- 0.8
       }
 
       cur.cell = get_cell_by_id(r.table, init.id)
@@ -92,14 +94,13 @@ Agent <- setRefClass(
         # Q(state, action) = R(state, action) + (gamma) * max( Q(next state, all actions) )
         # Q(B, F) = R(B,F) + gamma * max( Q(F,B), Q(F,E), Q(F,F) )
         cur.cell.weight = get_weight(cur.cell, direction)
-        q_state_action = cur.cell.weight + 0.8 * max_weight
+        q_state_action = cur.cell.weight + round(gamma * max_weight)
         
         # if (cur.cell$id == 20 || cur.cell$id == 24) {
         #   str <- paste(c("q_state_action=", q_state_action, ", cur.cell.weight=", cur.cell.weight, ", max_weight=", max_weight, ", direction=", direction, ", cur.cell$down=", cur.cell$down, ", cur.cell$right=", cur.cell$right, ", cur.cell$id=", cur.cell$id), collapse="")
         #   print(str)
         # }
         
-        # q_state_action = get_weight(cur.cell, direction) + 0.8 * max(c(next.cell$left, next.cell$up, next.cell$right, next.cell$down), na.rm = TRUE)
         set_weight(cur.cell, direction, q_state_action)
         # next.cell$self = q_state_action
         q.table[cur.cell$id] <<- cur.cell
@@ -150,10 +151,6 @@ Agent <- setRefClass(
     },
 
     initialize_q_table = function(row, col) {
-      # Dont use "q.table <<- list()" cause it will create 
-      # multi dimensional array when assigning more elements
-      q.table <<- q.table[-1]
-      
       total.cell = row * col
       for (i in 1:total.cell) {
         gc <- GridCell$new()
