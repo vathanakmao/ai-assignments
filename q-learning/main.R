@@ -4,7 +4,7 @@ source("Agent.R")
 print_grid = function(mygrid, max.col) {
   row = ""
   for (i in 1:length(mygrid)) {
-    tmp <- c("(id=", mygrid[[i]]$id,",l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
+    tmp <- c("(id=", mygrid[[i]]$id, ",self=", mygrid[[i]]$self ,",l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
     cell <- paste(tmp, collapse='')
     # print(cell2)
     row <- paste(row, cell, sep=", ")
@@ -67,10 +67,14 @@ r.table = generate_r_table(row, col)
 r.table[[24]]$right = reward
 r.table[[20]]$down = reward
 r.table[[25]]$self = reward
+
+print("============== R Table ==============")
+print_grid(r.table, col)
+
 agent <- Agent$new(q.table=list(-1))
 q.table = agent$learn(r.table, row, col, init.id, goal.id)
 
-# print_grid(r.table, col)
+print("============== Q Table ==============")
 print_grid(q.table, col)
 
 

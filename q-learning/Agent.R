@@ -11,6 +11,8 @@ Agent <- setRefClass(
     # r.table - one dimensional array
     #
     learn = function(r.table, r.row, r.col, init.id, goal.id) {
+      print("=================== START LEARNING ====================")
+      
       # when the object is initialized, q.table must be assigned with list(-1)
       # cause is.null() and length() funcitons does work on empty list, list()
       if (length(q.table) <= 1) {
@@ -20,12 +22,14 @@ Agent <- setRefClass(
 
       cur.cell = get_cell_by_id(r.table, init.id)
       goal.cell = get_cell_by_id(r.table, goal.id)
-      
       # print(cur.cell)
 
       while (cur.cell$id != goal.id) {
         # print(cur.cell$id)
         
+        # str <- paste(c(", cur.cell$id=", cur.cell$id, ",   cur.cell$down=", cur.cell$down, ", cur.cell$right=", cur.cell$right), collapse="")
+        # print(str)
+
         if (cur.cell$left <= -1 && cur.cell$up <= -1 && cur.cell$right <= -1 && cur.cell$down <= -1) {
           print("No path so quitting...")
           return (NULL)
@@ -52,11 +56,19 @@ Agent <- setRefClass(
           # randomly choose action
           direction = sample(directions, 1)
         } else { # otherwise, choose the action with the greatest weight
-          direction = max(cur.cell$left, cur.cell$up, cur.cell$right, cur.cell$down)
+          direction = 1
+          if ( direction < cur.cell$up) {
+            direction = 2
+          }
+          if (direction < cur.cell$right) {
+            direction = 3
+          }
+          if (direction < cur.cell$down) {
+            direction = 4
+          }
+          # direction = max(cur.cell$left, cur.cell$up, cur.cell$right, cur.cell$down)
         }
 
-        # Q(state, action) = R(state, action) + (gamma) * max( Q(next state, all actions) )
-        # Q(B, F) = R(B,F) + gamma * max( Q(F,B), Q(F,E), Q(F,F) )
         next.cell = get_next_cell_by_direction(cur.cell, direction, q.table, r.row, r.col) # next.cell is never null in this case
         
         # print("--------------------------------------------")
@@ -72,26 +84,37 @@ Agent <- setRefClass(
         if (max_weight < next.cell$down) {
           max_weight = next.cell$down
         }
-        q_state_action = get_weight(cur.cell, direction) + 0.8 * max_weight
+        
+        # Q(state, action) = R(state, action) + (gamma) * max( Q(next state, all actions) )
+        # Q(B, F) = R(B,F) + gamma * max( Q(F,B), Q(F,E), Q(F,F) )
+        cur.cell.weight = get_weight(cur.cell, direction)
+        q_state_action = cur.cell.weight + 0.8 * max_weight
+        
+        # if (cur.cell$id == 20 || cur.cell$id == 24) {
+        #   str <- paste(c("q_state_action=", q_state_action, ", cur.cell.weight=", cur.cell.weight, ", max_weight=", max_weight, ", direction=", direction, ", cur.cell$down=", cur.cell$down, ", cur.cell$right=", cur.cell$right, ", cur.cell$id=", cur.cell$id), collapse="")
+        #   print(str)
+        # }
         
         # q_state_action = get_weight(cur.cell, direction) + 0.8 * max(c(next.cell$left, next.cell$up, next.cell$right, next.cell$down), na.rm = TRUE)
         set_weight(cur.cell, direction, q_state_action)
         next.cell$self = q_state_action
         q.table[cur.cell$id] <<- cur.cell
         
-        print("=======================")
-        print(q_state_action)
+        # cur.cell = next.cell
         
         if (next.cell$id == goal.id) {
           goal.cell$self = q_state_action
           q.table[goal.id] <<- goal.cell
-          q.table <<- q.table
           break
         }
-
-        cur.cell = next.cell
+        
+        ## move to next cell
+        cur.cell = get_cell_by_id(r.table, next.cell$id)
       }
-
+      
+      print(cur.cell)
+      print("================== END LEARNING ===================")
+      
       # get available actions
       # if the values of those cells equals to eachother, randomly choose one; otherwise, choose the max value
       # use the pseudocode to calculate the Q(state, action), for example, Q(currentcell, nextcell).
@@ -101,8 +124,8 @@ Agent <- setRefClass(
     },
 
     get_next_cell_by_direction = function(cur.cell, direction, grid, row, col) {
-      # print("====================== grid:")
-      # print(grid)
+      print("====================== grid:")
+      print(paste(c("cur.cell$id=", cur.cell$id, ", direction=", direction, ", col=", col, ", row=", row)))
       
       if (direction == 1) { # if left
         if (cur.cell$left != -1) {
