@@ -58,24 +58,39 @@ generate_r_table = function(max.row, max.col) {
 
 
 ## train agent
+
+## EXAMPLE 1
+# init.id = 1
+# goal.id = 25
+# reward = 100
+# col = 5
+# row = 5
+# r.table = generate_r_table(row, col)
+# r.table[[20]]$down = reward
+# r.table[[24]]$right = reward
+# r.table[[25]]$self = reward
+
+## EXAMPLE 2
 init.id = 1
 goal.id = 15
 reward = 100
 col = 3
 row = 5
 r.table = generate_r_table(row, col)
-r.table[[14]]$right = reward
 r.table[[12]]$down = reward
+r.table[[14]]$right = reward
 r.table[[15]]$self = reward
 
 print("============== R Table ==============")
 print_grid(r.table, col)
 
 agent <- Agent$new(q.table=list(-1))
-q.table = agent$learn(r.table, row, col, init.id, goal.id)
+for (i in 1:10) {
+  agent$learn(r.table, row, col, init.id, goal.id)  
+}
 
 print("============== Q Table ==============")
-print_grid(q.table, col)
+print_grid(agent$q.table, col)
 
 
 

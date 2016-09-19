@@ -101,7 +101,7 @@ Agent <- setRefClass(
         
         # q_state_action = get_weight(cur.cell, direction) + 0.8 * max(c(next.cell$left, next.cell$up, next.cell$right, next.cell$down), na.rm = TRUE)
         set_weight(cur.cell, direction, q_state_action)
-        next.cell$self = q_state_action
+        # next.cell$self = q_state_action
         q.table[cur.cell$id] <<- cur.cell
         
         if (next.cell$id == goal.id) {
@@ -114,7 +114,7 @@ Agent <- setRefClass(
         cur.cell = get_cell_by_id(r.table, next.cell$id)
       }
       
-      print(cur.cell)
+      # print(cur.cell)
       print("================== END LEARNING ===================")
       
       # get available actions
@@ -126,8 +126,8 @@ Agent <- setRefClass(
     },
 
     get_next_cell_by_direction = function(cur.cell, direction, grid, row, col) {
-      print("====================== grid:")
-      print(paste(c("cur.cell$id=", cur.cell$id, ", direction=", direction, ", col=", col, ", row=", row)))
+      # print("====================== get_next_cell_by_direction():")
+      # print(paste(c("cur.cell$id=", cur.cell$id, ", direction=", direction, ", col=", col, ", row=", row), collapse=""))
       
       if (direction == 1) { # if left
         if (cur.cell$left != -1) {
