@@ -59,14 +59,14 @@ generate_r_table = function(max.row, max.col) {
 
 ## train agent
 init.id = 1
-goal.id = 25
+goal.id = 15
 reward = 100
-col = 5
+col = 3
 row = 5
 r.table = generate_r_table(row, col)
-r.table[[24]]$right = reward
-r.table[[20]]$down = reward
-r.table[[25]]$self = reward
+r.table[[14]]$right = reward
+r.table[[12]]$down = reward
+r.table[[15]]$self = reward
 
 print("============== R Table ==============")
 print_grid(r.table, col)

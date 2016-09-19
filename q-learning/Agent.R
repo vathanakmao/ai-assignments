@@ -57,16 +57,19 @@ Agent <- setRefClass(
           direction = sample(directions, 1)
         } else { # otherwise, choose the action with the greatest weight
           direction = 1
-          if ( direction < cur.cell$up) {
+          tmp.max = cur.cell$left
+          if (tmp.max < cur.cell$up) {
             direction = 2
+            tmp.max = cur.cell$up
           }
-          if (direction < cur.cell$right) {
+          if (tmp.max < cur.cell$right) {
             direction = 3
+            tmp.max = cur.cell$right
           }
-          if (direction < cur.cell$down) {
+          if (tmp.max < cur.cell$down) {
             direction = 4
+            tmp.max = cur.cell$down
           }
-          # direction = max(cur.cell$left, cur.cell$up, cur.cell$right, cur.cell$down)
         }
 
         next.cell = get_next_cell_by_direction(cur.cell, direction, q.table, r.row, r.col) # next.cell is never null in this case
@@ -74,6 +77,7 @@ Agent <- setRefClass(
         # print("--------------------------------------------")
         # print(next.cell)
         
+        ## max( Q(next state, all actions)
         max_weight = next.cell$left
         if (max_weight < next.cell$up) {
           max_weight = next.cell$up
@@ -99,8 +103,6 @@ Agent <- setRefClass(
         set_weight(cur.cell, direction, q_state_action)
         next.cell$self = q_state_action
         q.table[cur.cell$id] <<- cur.cell
-        
-        # cur.cell = next.cell
         
         if (next.cell$id == goal.id) {
           goal.cell$self = q_state_action
