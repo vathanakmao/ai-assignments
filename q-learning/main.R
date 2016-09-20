@@ -89,21 +89,17 @@ print_grid(r.table, col)
 agent <- Agent$new()
 # explored_cells = agent$learn(r.table, row, col, init.id, goal.id)
 
-for (i in 1:10) {
-  # print(i)
-
+for (i in 1:50) {
+  init.id = sample(1:15, 1)  
+  print( paste( c("Init Cell ID: ", init.id, ", Goal Cell ID: ", goal.id), collapse = "") )
+  
   explored_cells = agent$learn(r.table, row, col, init.id, goal.id)
-  closest_cell = explored_cells[[length(explored_cells)]]
-  if (closest_cell$id != 14 && closest_cell$id != 12) {
-    stop()
-  }
-
-  # print("============== Q Table ==============")
-  # print_grid(agent$q.table, col)
+  # closest_cell = explored_cells[[length(explored_cells)]]
+  # if (closest_cell$id != 14 && closest_cell$id != 12) {
+  #   stop()
+  # }
 }
 
-# print("============== Q Table ==============")
-print_grid(agent$q.table, col)
 
 
 

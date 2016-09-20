@@ -122,7 +122,7 @@ Agent <- setRefClass(
         cur.cell = get_cell_by_id(r.table, next.cell$id)
       }
       
-      # print(cur.cell$id)
+      print_grid(q.table, r.col)
       print("================== END LEARNING ===================")
 
       return (explored_cells)
@@ -226,7 +226,22 @@ Agent <- setRefClass(
         }
       }
       return (NULL)
-    }
+    },
     
+    print_grid = function(mygrid, max.col) {
+      row = ""
+      for (i in 1:length(mygrid)) {
+        # tmp <- c("(id=", mygrid[[i]]$id, ",self=", mygrid[[i]]$self ,",l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
+        # tmp <- c("(id=", mygrid[[i]]$id, ",l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
+        tmp <- c("(l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
+        cell <- paste(tmp, collapse='')
+        # print(cell2)
+        row <- paste(row, cell, sep=", ")
+        if (i %% max.col == 0) {
+          print(row)
+          row = ""
+        }
+      }
+    }
   )
 )
