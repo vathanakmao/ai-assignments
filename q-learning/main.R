@@ -4,7 +4,9 @@ source("Agent.R")
 print_grid = function(mygrid, max.col) {
   row = ""
   for (i in 1:length(mygrid)) {
-    tmp <- c("(id=", mygrid[[i]]$id, ",self=", mygrid[[i]]$self ,",l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
+    # tmp <- c("(id=", mygrid[[i]]$id, ",self=", mygrid[[i]]$self ,",l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
+    # tmp <- c("(id=", mygrid[[i]]$id, ",l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
+    tmp <- c("(l=", mygrid[[i]]$left, ",r=", mygrid[[i]]$right, ",u=", mygrid[[i]]$up, ",d=", mygrid[[i]]$down, ")")
     cell <- paste(tmp, collapse='')
     # print(cell2)
     row <- paste(row, cell, sep=", ")
@@ -68,7 +70,6 @@ generate_r_table = function(max.row, max.col) {
 # r.table = generate_r_table(row, col)
 # r.table[[20]]$down = reward
 # r.table[[24]]$right = reward
-# r.table[[25]]$self = reward
 
 ## EXAMPLE 2
 init.id = 1
@@ -79,21 +80,28 @@ row = 5
 r.table = generate_r_table(row, col)
 r.table[[12]]$down = reward
 r.table[[14]]$right = reward
-# r.table[[15]]$self = reward
 
 print("============== R Table ==============")
 print_grid(r.table, col)
 
 agent <- Agent$new()
-for (i in 1:10) {
-  agent$learn(r.table, row, col, init.id, goal.id)  
-  
-  print("============== Q Table ==============")
-  print_grid(agent$q.table, col)
-}
+explored_cells = agent$learn(r.table, row, col, init.id, goal.id)
 
-print("============== Q Table ==============")
-print_grid(agent$q.table, col)
+# for (i in 1:100) {
+#   print(i)
+#   
+#   explored_cells = agent$learn(r.table, row, col, init.id, goal.id)
+#   closest_cell = explored_cells[[length(explored_cells)]] 
+#   if (closest_cell$id != 14 && closest_cell$id != 12) {
+#     stop()
+#   }
+# 
+#   # print("============== Q Table ==============")
+#   # print_grid(agent$q.table, col)
+# }
+
+# print("============== Q Table ==============")
+# print_grid(agent$q.table, col)
 
 
 

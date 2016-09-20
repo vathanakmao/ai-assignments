@@ -26,8 +26,12 @@ Agent <- setRefClass(
       goal.cell = get_cell_by_id(r.table, goal.id)
       # print(cur.cell)
 
+      explored_cells = c()
+      
       while (cur.cell$id != goal.id) {
-        # print(cur.cell$id)
+        print( paste( c("(id=", cur.cell$id, ",l=", cur.cell$left, ",r=", cur.cell$right, ",u=", cur.cell$up, ",d=", cur.cell$down, ")"), collapse="" ) )
+        
+        explored_cells = c(explored_cells, cur.cell)
         
         # str <- paste(c(", cur.cell$id=", cur.cell$id, ",   cur.cell$down=", cur.cell$down, ", cur.cell$right=", cur.cell$right), collapse="")
         # print(str)
@@ -115,15 +119,10 @@ Agent <- setRefClass(
         cur.cell = get_cell_by_id(r.table, next.cell$id)
       }
       
-      # print(cur.cell)
+      # print(cur.cell$id)
       print("================== END LEARNING ===================")
-      
-      # get available actions
-      # if the values of those cells equals to eachother, randomly choose one; otherwise, choose the max value
-      # use the pseudocode to calculate the Q(state, action), for example, Q(currentcell, nextcell).
-      # set the calcualted value in Q table
-      # do it from the first again with the next action
-      return (q.table)
+
+      return (explored_cells)
     },
 
     get_next_cell_by_direction = function(cur.cell, direction, grid, row, col) {
