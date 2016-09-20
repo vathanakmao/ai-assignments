@@ -100,6 +100,48 @@ for (i in 1:50) {
   # }
 }
 
+max_weight = 0
+# print("------------------------------------ length:")
+# print(length(agent$q.table))
+for (i in 1:length(agent$q.table)) {
+  weight = 0
+  # print(agent$q.table[[i]])
+  if (weight < agent$q.table[[i]]$left) {
+    weight = agent$q.table[[i]]$left
+  }
+  if (weight < agent$q.table[[i]]$up) {
+    weight = agent$q.table[[i]]$up
+  }
+  if (weight < agent$q.table[[i]]$right) {
+    weight = agent$q.table[[i]]$right
+  }
+  if (weight < agent$q.table[[i]]$down) {
+    weight = agent$q.table[[i]]$down
+  }
+  # print(weight)
+  if (max_weight < weight) {
+    max_weight = weight
+  }
+}
+ print(max_weight)
+
+for (i in length(agent$q.table)) {
+  if (agent$q.table[[i]]$left != 0 && agent$q.table[[i]]$left != -1) {
+    agent$q.table[[i]]$left = agent$q.table[[i]]$left * 100 / max_weight
+  }
+  if (agent$q.table[[i]]$up != 0 && agent$q.table[[i]]$up != -1) {
+    agent$q.table[[i]]$up = agent$q.table[[i]]$up * 100 / max_weight
+  }
+  if (agent$q.table[[i]]$right != 0 && agent$q.table[[i]]$right != -1) {
+    agent$q.table[[i]]$right = agent$q.table[[i]]$right * 100 / max_weight
+  }
+  if (agent$q.table[[i]]$down != 0 && agent$q.table[[i]]$down != -1) {
+    agent$q.table[[i]]$down = agent$q.table[[i]]$down * 100 / max_weight
+  }
+}
+print("------------------------ After Normalization ------------------------")
+print_grid(agent$q.table, col) ## NOT WORK
+
 
 
 
