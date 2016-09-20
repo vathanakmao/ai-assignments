@@ -29,7 +29,7 @@ Agent <- setRefClass(
       explored_cells = c()
       
       while (cur.cell$id != goal.id) {
-        print( paste( c("(id=", cur.cell$id, ",l=", cur.cell$left, ",r=", cur.cell$right, ",u=", cur.cell$up, ",d=", cur.cell$down, ")"), collapse="" ) )
+        # print( paste( c("(id=", cur.cell$id, ",l=", cur.cell$left, ",r=", cur.cell$right, ",u=", cur.cell$up, ",d=", cur.cell$down, ")"), collapse="" ) )
         
         explored_cells = c(explored_cells, cur.cell)
         
@@ -93,6 +93,9 @@ Agent <- setRefClass(
         }
         if (max_weight < next.cell$down) {
           max_weight = next.cell$down
+        }
+        if (max_weight < next.cell$self) {
+          max_weight = next.cell$self
         }
         
         # Q(state, action) = R(state, action) + (gamma) * max( Q(next state, all actions) )
@@ -158,6 +161,7 @@ Agent <- setRefClass(
         gc$down = 0
         gc$left = 0
         gc$right = 0
+        gc$self = 0
         q.table <<- c(q.table, gc)
 
         # if top row, no path up

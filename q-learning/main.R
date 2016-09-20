@@ -27,6 +27,7 @@ generate_r_table = function(max.row, max.col) {
     gc$down = 0
     gc$left = 0
     gc$right = 0
+    gc$self = 0
     r.table <- c(r.table, gc)
     
     # if top row, no path up
@@ -80,28 +81,29 @@ row = 5
 r.table = generate_r_table(row, col)
 r.table[[12]]$down = reward
 r.table[[14]]$right = reward
+r.table[[15]]$self = reward
 
 print("============== R Table ==============")
 print_grid(r.table, col)
 
 agent <- Agent$new()
-explored_cells = agent$learn(r.table, row, col, init.id, goal.id)
+# explored_cells = agent$learn(r.table, row, col, init.id, goal.id)
 
-# for (i in 1:100) {
-#   print(i)
-#   
-#   explored_cells = agent$learn(r.table, row, col, init.id, goal.id)
-#   closest_cell = explored_cells[[length(explored_cells)]] 
-#   if (closest_cell$id != 14 && closest_cell$id != 12) {
-#     stop()
-#   }
-# 
-#   # print("============== Q Table ==============")
-#   # print_grid(agent$q.table, col)
-# }
+for (i in 1:10) {
+  # print(i)
+
+  explored_cells = agent$learn(r.table, row, col, init.id, goal.id)
+  closest_cell = explored_cells[[length(explored_cells)]]
+  if (closest_cell$id != 14 && closest_cell$id != 12) {
+    stop()
+  }
+
+  # print("============== Q Table ==============")
+  # print_grid(agent$q.table, col)
+}
 
 # print("============== Q Table ==============")
-# print_grid(agent$q.table, col)
+print_grid(agent$q.table, col)
 
 
 
